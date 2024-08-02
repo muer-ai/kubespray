@@ -1,0 +1,66 @@
+---
+- name: Update cert file
+  hosts: all
+  become: true
+  serial: 1
+  tasks:
+    - name: Ensure /usr/local/share/ca-certificates/dntq-ca.crt file has the desired content
+      copy:
+        dest: /usr/local/share/ca-certificates/dntq-ca.crt
+        content: |
+          -----BEGIN CERTIFICATE-----
+          MIIFsDCCA5igAwIBAgIULSMjmO/ET/8KM+4MKMYOm5L9sq0wDQYJKoZIhvcNAQEL
+          BQAwbzELMAkGA1UEBhMCQ04xEDAOBgNVBAgMB0JlaWppbmcxEDAOBgNVBAcMB0Jl
+          aWppbmcxETAPBgNVBAoMCEROVFEgTHRkMRIwEAYDVQQLDAlEYXRhICYgTUwxFTAT
+          BgNVBAMMDEROVFEgUm9vdCBDQTAgFw0yNDA3MTgwODMxMDZaGA8yMDc0MDgyNTA4
+          MzEwNlowbzELMAkGA1UEBhMCQ04xEDAOBgNVBAgMB0JlaWppbmcxEDAOBgNVBAcM
+          B0JlaWppbmcxETAPBgNVBAoMCEROVFEgTHRkMRIwEAYDVQQLDAlEYXRhICYgTUwx
+          FTATBgNVBAMMDEROVFEgUm9vdCBDQTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCC
+          AgoCggIBAMqCE228yOoSLHzlPPp3J27/7dBBzG0Tor1VEuzCTMoHdoqBJYd8jBoM
+          H4jd5MMU4ia5o0oYag+C6E4ucf/pS+YfFk2wH3cVP2CNyh1H4XyHlqM3vB2Lm7k4
+          VMyO1TlZzdd+1yomy/SPzW1eqIujbvsCj7Q6Kc9xqLFletSmH3KGDR7QS0XV+eK9
+          hrlWAU0Lo5//ZOxQdFSDDw2OXtyKBrgOdRtVSVAwH0BQuuqrG1iw6XdGrQ0N5MPn
+          +UhzjEGD7Hrl9zjW8jA5KLV839VDv2vLXkjZIDVPNPc6M1/ZpNS/1Ah8zn2iRCpZ
+          ygfZeGCY8xVxYhyCUgiiN0qkO9B2bzKqwwsUHrqDshreNwGd/Yt8PmvfpwxGK2tb
+          L4nVm5gnF1CtUyQZN1+M/5yGEbUpzNDREvZwjJtzxvjW311W7GF1yS86chTBsGJ4
+          QzHJ99zKZBuM+SSjqr7fWSZxAlBp7VrGB6D6G2RXU/hmo9lWg0O0aNLc5HEc3Urq
+          BmIlKlJHPKR7HbLLepJ96o6tAfVOmM5rV8i+63RPTbwxttsdy3fqirLzfrbal7bG
+          DkIuYfoybiBz3iuGEsa0aZ6vMYqd9styfjMySpOfdrJTux7/rRHxa2aea21+JCRR
+          lwr/cnkLzIgmjU/46CdrTbKEnwxvOwkl9vE+BqzmsUe3FFDnqr31AgMBAAGjQjBA
+          MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgGGMB0GA1UdDgQWBBTYR5Qi
+          stc4do42R0VhtsUl0CfDNzANBgkqhkiG9w0BAQsFAAOCAgEAfZan7SxKDlgkvrdk
+          OmU9ehb4cfhEty1aIjqCdKi34nNSvHZ7OMSZzklP/uwiCmAADeJXAmt5j47Z9ujo
+          I5lE+nYWNYgCeEeTl3wDvbdXcIjMcIaaPvdbS5G0MMhWfC8KNwW1sjqICamZ5s5I
+          6yPx008q6Wwh+mwzVGACmwDWHyQfA5pgFyp/A2Sp/vlJKUSBkmkb2qy2Jh8vAtTg
+          QHlzvJQZ1CXYCUkL2DW97P+5xfCb/9K3/Lo2Q7r5VJZ230baYqDhE6Y9RgzyQdQo
+          ca7nodDSn6RluBu7mJXCta4AvLAiCT/4HEqFHed6lYJfmIAC5FUp/AlA+tX7TGC6
+          rQrH8aG8QWGKiCsmp47z90YuIUknDozPoTqWq9Nt3bd4l71wo6YR329SPlSlilQK
+          ZY3xkRFJCxh3jWk7gV++zEGJu+9McmTam6rKUAHrXq3ECLZEpFEJvNB0WhikTLu6
+          5EOmec2t7UKyjOkS3XRupnhVZhhjfoHJU9iAbIBmYk5qGQQlosr7rZ2KyZMYY7Xf
+          V+GNQi0rHNHIwvk6WMaKaFnrZG82U7uX+iEprf/A+eUs8vuWLDulPIm0xRR3P9Gt
+          moJEzoqw+VlsYdYoJTRY6LOs2Pl5klMyRScJu2jCSrKYn4aXX9ZRbwrD9aR1nkni
+          MSX12c5RJHrgeQcmEdzmNyXhqTE=
+          -----END CERTIFICATE-----
+
+    - name: Update CA certificates
+      command: update-ca-certificates
+
+    # - name: Restart Kubelet
+    #   systemd:
+    #     name: kubelet
+    #     state: restarted
+
+    # - name: Wait for kubelet to restart
+    #   wait_for:
+    #     port: 10250
+    #     host: "{{ inventory_hostname }}"
+    #     delay: 10
+    #     timeout: 300
+
+    # - name: Check kubelet status
+    #   command: systemctl is-active kubelet
+    #   register: kubelet_status
+    #   until: kubelet_status.stdout == "active"
+    #   retries: 5
+    #   delay: 10
+    #   when: result is succeeded

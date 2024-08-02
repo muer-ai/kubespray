@@ -1,0 +1,245 @@
+---
+- name: Update ca to all hosts
+  hosts: all
+  become: true
+  tasks:
+    - name: Remove file if it exists
+      ansible.builtin.file:
+        path: /usr/local/share/ca-certificates/dntq-ca-cert.crt
+        state: absent
+    - name: Add ca-cert to trust ca
+      copy:
+        dest: /usr/local/share/ca-certificates/dntq-ca.crt
+        mode: '0644'
+        owner: root
+        group: root
+        content: |
+          -----BEGIN CERTIFICATE-----
+          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
+          MSX12c5RJHrgeQcmEdzmNyXhqTE=
+          -----END CERTIFICATE-----
+    - name: Update ca
+      ansible.builtin.command:
+        cmd: update-ca-certificates
+
+- name: Update /etc/hosts file
+  hosts: minio_node
+  become: true
+  tasks:
+    - name: Ensure /etc/default/minio file has the desired content
+      copy:
+        dest: /etc/default/minio
+        content: |
+          # MINIO_ROOT_USER and MINIO_ROOT_PASSWORD sets the root account for the MinIO server.
+          # This user has unrestricted permissions to perform S3 and administrative API operations on any resource in the deployment.
+          # Omit to use the default values 'minioadmin:minioadmin'.
+          # MinIO recommends setting non-default values as a best practice, regardless of environment.
+
+          MINIO_ROOT_USER=dntq-admin
+          MINIO_ROOT_PASSWORD=dntq-minio-secret
+
+          # MINIO_VOLUMES sets the storage volumes or paths to use for the MinIO server.
+          # The specified path uses MinIO expansion notation to denote a sequential series of drives between 1 and 4, inclusive.
+          # All drives or paths included in the expanded drive list must exist *and* be empty or freshly formatted for MinIO to start successfully.
+
+          MINIO_VOLUMES="https://minio{1...4}.shandong-prod-1.kube-cluster.local:9000/mnt/minio/drive1 https://minio{1...4}.shandong-prod-1.kube-cluster.local:9000/mnt/minio/drive2"
+          # MINIO_DOMAIN="minio.kube-cluster.local"
+
+          # MINIO_OPTS sets any additional commandline options to pass to the MinIO server.
+          # For example, `--console-address :9001` sets the MinIO Console listen port
+          MINIO_OPTS="--console-address :9001 --certs-dir /opt/minio/certs"
+
+          MINIO_STORAGE_CLASS_STANDARD="EC:2"
+          MINIO_STORAGE_CLASS_RRS="EC:0"
+          MINIO_COMPRESSION_ENABLE="on"
+          MINIO_COMPRESSION_EXTENSIONS=".txt, .log, .csv, .json, .tar, .xml, .bin, .pdf"
+          MINIO_COMPRESSION_MIME_TYPES="text/*, application/json, application/xml, audio/*, image/*, video/*, application/x-compress, binary/octet-stream"
+    - name: Create paths
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+        owner: minio-user
+        group: minio-user
+      with_items:
+        - /opt/minio/certs
+        - /opt/minio/certs/CAs
+    - name: Copy ca-certs
+      copy:
+        dest: /opt/minio/certs/CAs/ca-cert.crt
+        mode: '0644'
+        owner: minio-user
+        group: minio-user
+        content: |
+          -----BEGIN CERTIFICATE-----
+          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
+          MSX12c5RJHrgeQcmEdzmNyXhqTE=
+          -----END CERTIFICATE-----
+    - name: Copy minio-certs
+      copy:
+        dest: /opt/minio/certs/public.crt
+        mode: '0644'
+        owner: minio-user
+        group: minio-user
+        content: |
+          -----BEGIN CERTIFICATE-----
+          MIIHAjCCBOqgAwIBAgIUSZDVj2nMsNnyO45hW1z1Q+wdKz0wDQYJKoZIhvcNAQEL
+          BQAwbzELMAkGA1UEBhMCQ04xEDAOBgNVBAgMB0JlaWppbmcxEDAOBgNVBAcMB0Jl
+          aWppbmcxETAPBgNVBAoMCEROVFEgTHRkMRIwEAYDVQQLDAlEYXRhICYgTUwxFTAT
+          BgNVBAMMDEROVFEgUm9vdCBDQTAeFw0yNDA3MTgwODQwMTVaFw0yOTA3MjIwODQw
+          MTVaMHUxCzAJBgNVBAYTAkNOMRAwDgYDVQQIDAdCZWlqaW5nMRAwDgYDVQQHDAdC
+          ZWlqaW5nMREwDwYDVQQKDAhETlRRIEx0ZDESMBAGA1UECwwJRGF0YSAmIE1MMRsw
+          GQYDVQQDDBJrdWJlLWNsdXN0ZXIubG9jYWwwggIiMA0GCSqGSIb3DQEBAQUAA4IC
+          DwAwggIKAoICAQDl7iBxQcx9VtYyLdnvyRakUgGAR+re0IcbPnsxhhCtNZIDyuu+
+          FNNC1l/tNp90zyLnHfqJBsVVlKYJk3ZgQQO65tXQvrFPSKx/diz4sAf8Dm4r8/Ap
+          IRu+KVOZ/dkc83v0U75tqP7qQwVMzelaUKXLWCkBOgx2yOyG5yAilHUEH8h2VqWU
+          P9NkE3k4ir3pTgNsadH0f1tkfCjL5gP9rwl2pxCwl+8pF84/tLRS5md7vU1pyEhv
+          qjCjUbzKSm5fiFN8loy6yqBz2Dxd2ipTgj2832dwo2YZasMYbjJTCtSDUfUMZvzv
+          W2zX1u0KE5qbH79OPye3BIwykLXqb5w9Z7TzdV1NLyf7IJmiPyWTdbv5di9fjZ5M
+          gN2nXXwFdAWdsgC4fd7EcIWzQ65cbkWNHss7XnQ5XKoQne8WCq8ourbRRCbNUj54
+          Sbp8Q9nu4xafAbUrbuk7i58ZZV7urUjfrb+0Iblcs5XBcinknqhR6adArvuqxhMm
+          jM+gm+BgIWaQ89Hewn9N3FVeE/nVMBwIu7s71aApWLSVifrnok5RqkvRTCP0mYVn
+          3av95sNR3h6czG+GUd+feuCAkcrpPf01D+egllibgMZLQBF9SX7Aer5Kv43Doifl
+          f2ZVi5MDMPeY6XF2A3nmr9by6b7Trbp2bjCIAjfYtOU2lCPeSgmczUwiYQIDAQAB
+          o4IBjjCCAYowDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0lBBYw
+          FAYIKwYBBQUHAwEGCCsGAQUFBwMCMB0GA1UdDgQWBBRf+UfV/xOzzQMNEikNXOLe
+          QGAB8zCCAQkGA1UdEQSCAQAwgf2HBH8AAAGCCWxvY2FsaG9zdIISa3ViZS1jbHVz
+          dGVyLmxvY2FsghQqLmt1YmUtY2x1c3Rlci5sb2NhbIIkKi5zaGFuZG9uZy1wcm9k
+          LTEua3ViZS1jbHVzdGVyLmxvY2FsgjIqLmxha2Vob3VzZS5zdmMuc2hhbmRvbmct
+          cHJvZC0xLmt1YmUtY2x1c3Rlci5sb2NhbIIzKi5tb25pdG9yaW5nLnN2Yy5zaGFu
+          ZG9uZy1wcm9kLTEua3ViZS1jbHVzdGVyLmxvY2FsgjEqLnRyYWluaW5nLnN2Yy5z
+          aGFuZG9uZy1wcm9kLTEua3ViZS1jbHVzdGVyLmxvY2FsMB8GA1UdIwQYMBaAFNhH
+          lCKy1zh2jjZHRWG2xSXQJ8M3MA0GCSqGSIb3DQEBCwUAA4ICAQBSH3/IEKZXa4XP
+          yrxTQ2mPw5IPZraHBsQX1h8z+SUK9+DwFK5TkqksR/M92yChfdFyYfFyJFVjvMyR
+          8Xb8oQiGmvgYmadfW7dlO9ZF8lFAi72Tm/A8IpDLyQDSkqa/qsr9uoqck+mbQlq2
+          CGwjzY1LI7UdvHf59JJQM/DH2E+Tmd158APX6IQ0ZZks6otN5ebK9ldS0k2IievR
+          3ei3IZsr8JCGUKPl/PWMsTwcrZv/4p9oGg9gx4+xKrzU+6WBn8y7NxZLQvc9iNe/
+          fRyKpzWyezTCh9ySh2LBULgCw9fPG8za3OhBG96uEezto+3cZcyMtGGA7LsGiqja
+          A3B4ruJFYr1lzxTkmkB5UEX+JHo0UOyEWSQe/q58LBc+F40wulfIsTikLyfNWyF2
+          9S2r9ebwH6KxRLiF6bg1qCxM4QF3h+Kgz6YfnqhQPmv2xfZ0I9OBrLY1yxPqYu8A
+          0QcQpVYrdEH5IKJbydgbCVuWZ/n+wGUcbM2Cl5H7k70ZR03kfpqmwT1xai4PbWMW
+          wY5azGwAwKb+HLwcmms63rp94C54+OXoquz/AZISJ8+Mn/8TYGLsDDxZFBYWmsJX
+          b7EYtNFPwF/4Qv1F1QqMbbd0Wjywswzobaz6ne8WtZNvO6BekXq6+ORJOiiNid/5
+          c1VROAuQnAqpirq9qV5r2pT1/lNhpg==
+          -----END CERTIFICATE-----
+    - name: Copy minio-pk
+      copy:
+        dest: /opt/minio/certs/private.key
+        mode: '0644'
+        owner: minio-user
+        group: minio-user
+        content: |
+          -----BEGIN PRIVATE KEY-----
+          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
+          g+L9OU6jwZqDR6i/9Cj45ms00VjNL8s=
+          -----END PRIVATE KEY-----
+    - name: Restart MinIO service
+      systemd:
+        name: minio.service
+        state: restarted

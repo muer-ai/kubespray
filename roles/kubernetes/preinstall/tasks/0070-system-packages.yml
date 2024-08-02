@@ -18,7 +18,7 @@
   block:
     - name: Add Debian Backports apt repo
       apt_repository:
-        repo: "deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main"
+        repo: "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ {{ ansible_distribution_release }}-backports main"
         state: present
         filename: debian-backports
 

@@ -1,0 +1,38 @@
+---
+- hosts: a100_node
+  become: true
+  tasks:
+    - name: Add NVIDIA GPG key
+      ansible.builtin.command:
+        cmd: curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+      args:
+        warn: false
+
+    - name: Add NVIDIA Container Toolkit repository
+      ansible.builtin.command:
+        cmd: curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+      args:
+        warn: false
+
+    - name: Update apt package index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install NVIDIA Container Toolkit
+      ansible.builtin.apt:
+        name: nvidia-container-toolkit
+        state: present
+
+    - name: Run nvidia-ctk command
+      command: nvidia-ctk runtime configure --runtime=containerd
+      register: nvidia_ctk_command_result
+
+    - name: Display nvidia-ctk command output
+      debug:
+        var: nvidia_ctk_command_result.stdout_
+
+    - name: Restart containerd
+      systemd:
+        name: containerd
+        state: restarted
+

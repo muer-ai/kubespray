@@ -1,0 +1,141 @@
+---
+- name: Update kubelet-config.yml to a100
+  hosts: a100_node
+  become: true
+  tasks:
+    - name: Update /etc/kubernetes/kubelet-config.yaml
+      copy:
+        dest: /etc/kubernetes/kubelet-config.yaml
+        mode: '0644'
+        owner: root
+        group: root
+        content: |
+          apiVersion: kubelet.config.k8s.io/v1beta1
+          kind: KubeletConfiguration
+          nodeStatusUpdateFrequency: "10s"
+          failSwapOn: True
+          authentication:
+            anonymous:
+              enabled: false
+            webhook:
+              enabled: True
+            x509:
+              clientCAFile: /etc/kubernetes/ssl/ca.crt
+          authorization:
+            mode: Webhook
+          enforceNodeAllocatable:
+          - pods
+          - system-reserved
+          - kube-reserved
+          staticPodPath: /etc/kubernetes/manifests
+          cgroupDriver: systemd
+          containerLogMaxFiles: 5
+          containerLogMaxSize: 10Mi
+          maxPods: 110
+          podPidsLimit: -1
+          address: 214.3.30.3
+          readOnlyPort: 0
+          healthzPort: 10248
+          healthzBindAddress: 127.0.0.1
+          kubeletCgroups: /kube.slice/kubelet.service
+          clusterDomain: shandong-prod-1.kube-cluster.local
+          protectKernelDefaults: true
+          rotateCertificates: true
+          clusterDNS:
+          - 10.233.0.10
+          kubeReservedCgroup: /kube.slice
+          kubeReserved:
+            cpu: 2000m
+            memory: 8Gi
+          systemReservedCgroup: /system.slice
+          systemReserved:
+            cpu: 16000m
+            memory: 64Gi
+            ephemeral-storage: 10Gi
+          resolvConf: "/run/systemd/resolve/resolv.conf"
+          eventRecordQPS: 5
+          shutdownGracePeriod: 60s
+          shutdownGracePeriodCriticalPods: 20s
+
+# - name: restart kubelet
+#   hosts: a100_node
+#   become: true
+#   serial: 1
+#   tasks:
+#     - name: Restart Kubelet
+#       systemd:
+#         name: kubelet
+#         state: restarted
+
+#     - name: Wait for kubelet to restart
+#       wait_for:
+#         port: 10250
+#         host: "{{ inventory_hostname }}"
+#         delay: 10
+#         timeout: 300
+
+#     - name: Check kubelet status
+#       command: systemctl is-active kubelet
+#       register: kubelet_status
+#       until: kubelet_status.stdout == "active"
+#       retries: 5
+#       delay: 10
+#       when: result is succeeded
+
+- name: Update kubelet-config.yml to
+  hosts: kube_control_plane
+  become: true
+  tasks:
+    - name: Update /etc/kubernetes/kubelet-config.yaml
+      copy:
+        dest: /etc/kubernetes/kubelet-config.yaml
+        mode: '0644'
+        owner: root
+        group: root
+        content: |
+          apiVersion: kubelet.config.k8s.io/v1beta1
+          kind: KubeletConfiguration
+          nodeStatusUpdateFrequency: "10s"
+          failSwapOn: True
+          authentication:
+            anonymous:
+              enabled: false
+            webhook:
+              enabled: True
+            x509:
+              clientCAFile: /etc/kubernetes/ssl/ca.crt
+          authorization:
+            mode: Webhook
+          enforceNodeAllocatable:
+          - pods
+          - system-reserved
+          - kube-reserved
+          staticPodPath: /etc/kubernetes/manifests
+          cgroupDriver: systemd
+          containerLogMaxFiles: 5
+          containerLogMaxSize: 10Mi
+          maxPods: 110
+          podPidsLimit: -1
+          address: 214.3.30.3
+          readOnlyPort: 0
+          healthzPort: 10248
+          healthzBindAddress: 127.0.0.1
+          kubeletCgroups: /kube.slice/kubelet.service
+          clusterDomain: shandong-prod-1.kube-cluster.local
+          protectKernelDefaults: true
+          rotateCertificates: true
+          clusterDNS:
+          - 10.233.0.10
+          kubeReservedCgroup: /kube.slice
+          kubeReserved:
+            cpu: 2000m
+            memory: 8Gi
+          systemReservedCgroup: /system.slice
+          systemReserved:
+            cpu: 16000m
+            memory: 64Gi
+            ephemeral-storage: 10Gi
+          resolvConf: "/run/systemd/resolve/resolv.conf"
+          eventRecordQPS: 5
+          shutdownGracePeriod: 60s
+          shutdownGracePeriodCriticalPods: 20s

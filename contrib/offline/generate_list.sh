@@ -24,7 +24,8 @@ sed -n '/^downloads:/,/download_defaults:/p' ${REPO_ROOT_DIR}/${DOWNLOAD_YML} \
 # list separately.
 KUBE_IMAGES="kube-apiserver kube-controller-manager kube-scheduler kube-proxy"
 for i in $KUBE_IMAGES; do
-    echo "{{ kube_image_repo }}/$i:{{ kube_version }}" >> ${TEMP_DIR}/images.list.template
+    # echo "{{ kube_image_repo }}/$i:{{ kube_version }}" >> ${TEMP_DIR}/images.list.template
+    echo "caichong-registry.cn-zhangjiakou.cr.aliyuncs.com/training/$i:{{ kube_version }}" >> ${TEMP_DIR}/images.list.template
 done
 
 # run ansible to expand templates

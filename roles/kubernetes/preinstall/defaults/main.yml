@@ -109,7 +109,7 @@ ntp_tinker_panic: false
 ntp_force_sync_immediately: false
 
 # Set the timezone for your server.  eg: "Etc/UTC","Etc/GMT-8". If not set, the timezone will not change.
-ntp_timezone: ""
+ntp_timezone: "Asia/Shanghai"
 
 # Currently known os distributions
 supported_os_distributions:

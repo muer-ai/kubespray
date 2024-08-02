@@ -1,0 +1,31 @@
+---
+- name: Update /etc/hosts file
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure /etc/hosts file has the desired content
+      copy:
+        dest: /etc/hosts
+        content: |
+          127.0.0.1 localhost.localdomain localhost
+          127.0.1.1 localhost
+
+          # The following lines are desirable for IPv6 capable hosts
+          ::1 localhost6 ip6-localhost ip6-loopback localhost6.localdomain
+          fe00::0 ip6-localnet
+          ff00::0 ip6-mcastprefix
+          ff02::1 ip6-allnodes
+          ff02::2 ip6-allrouters
+          # Ansible inventory hosts BEGIN
+          214.3.30.101 dntq-sd-cpu-1.shandong-prod-1.kube-cluster.local dntq-sd-cpu-1
+          214.3.30.102 dntq-sd-cpu-2.shandong-prod-1.kube-cluster.local dntq-sd-cpu-2 minio.shandong-prod-1.kube-cluster.local
+          214.3.30.1 dntq-sd-a100-1.shandong-prod-1.kube-cluster.local dntq-sd-a100-1 minio1.shandong-prod-1.kube-cluster.local
+          214.3.30.2 dntq-sd-a100-2.shandong-prod-1.kube-cluster.local dntq-sd-a100-2 minio2.shandong-prod-1.kube-cluster.local
+          214.3.30.3 dntq-sd-a100-3.shandong-prod-1.kube-cluster.local dntq-sd-a100-3 minio3.shandong-prod-1.kube-cluster.local
+          214.3.30.4 dntq-sd-a100-4.shandong-prod-1.kube-cluster.local dntq-sd-a100-4 minio4.shandong-prod-1.kube-cluster.local
+          214.3.30.5 dntq-sd-a100-5.shandong-prod-1.kube-cluster.local dntq-sd-a100-5 minio5.shandong-prod-1.kube-cluster.local
+          214.3.30.6 dntq-sd-a100-6.shandong-prod-1.kube-cluster.local dntq-sd-a100-6 minio6.shandong-prod-1.kube-cluster.local
+          214.3.30.7 dntq-sd-a100-7.shandong-prod-1.kube-cluster.local dntq-sd-a100-7 minio7.shandong-prod-1.kube-cluster.local
+          214.3.30.8 dntq-sd-a100-8.shandong-prod-1.kube-cluster.local dntq-sd-a100-8 minio8.shandong-prod-1.kube-cluster.local
+          # Ansible inventory hosts END
+          214.3.30.200 nessie.shandong-prod-1.kube-cluster.local trino.shandong-prod-1.kube-cluster.local harbor.shandong-prod-1.kube-cluster.local registry.shandong-prod-1.kube-cluster.local

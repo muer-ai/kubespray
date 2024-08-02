@@ -1,0 +1,41 @@
+---
+- name: Update docker config.json to a100
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure target directory exists
+      file:
+        path: /root/.docker
+        state: directory
+        mode: '0755'
+
+    - name: Add .docker/config.json
+      copy:
+        dest: /root/.docker/config.json
+        mode: '0644'
+        owner: root
+        group: root
+        content: |
+          {
+            "auths": {
+              "caichong-registry.cn-zhangjiakou.cr.aliyuncs.com": {
+                "auth": "amlua3VuQDE3MTI3MTE0MjQ0OTg4NTU6amtsdVpoeTEyMTI="
+              },
+              "harbor.shandong-prod-1.kube-cluster.local": {
+                "auth": "YWRtaW46SGFyYm9yMTIzNDU="
+              }
+            }
+          }
+
+# - name: pull image
+#   hosts: a100_node
+#   become: true
+#   serial: 1
+#   tasks:
+#     - name: Pull target image
+#       command: ctr -n k8s.io images pull --user jinkun@1712711424498855:jkluZhy1212 caichong-registry.cn-zhangjiakou.cr.aliyuncs.com/training/ray-pytorch-infer:2.32.0-py310-cu121
+#       register: result
+
+#     - name: Print the pulled image information
+#       debug:
+#         var: result.stdout
